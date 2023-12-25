@@ -14,6 +14,7 @@
     "@babel/preset-env": "^7.23.6"
   },
   "dependencies": {
+    "xml-js": "^1.6.11",
     "yamljs": "^0.3.0"
   }
 }
