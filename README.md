@@ -65,7 +65,7 @@ json_data = ff.yaml_to_json(yaml_data);
 console.log(json_data);
 ```
 
-For more examples, you can visit our <a href="https://github.com/aliftech/FormatFusion/blob/master/DOCUMENTATION.md">documentation</a>.
+For more examples, you can visit our <a href="https://github.com/aliftech/FormatFusionJS/blob/master/DOCUMENTATION.md">documentation</a>.
 
 ## Contributing
 
@@ -73,8 +73,8 @@ Kindly read our [Contributing Guide](CONTRIBUTING.md) to familiarize yourself wi
 
 ## Contributors
 
-<a href="https://github.com/aliftech/FormatFusion/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aliftech/FormatFusion" />
+<a href="https://github.com/aliftech/FormatFusionJS/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=aliftech/FormatFusionJS" />
 </a>
 
 ## License
