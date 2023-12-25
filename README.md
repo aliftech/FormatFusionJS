@@ -16,9 +16,6 @@ FormatFusion is your one-stop solution for seamless conversion between YAML, JSO
 
 ## Features
 
-- **Read file:** Read any data from file with any format.
-- **Scan url:** Read any data from url.
-- **Save file:** Save data in any file format.
 - **YAML To JSON Data Conversion:** Convert yaml data to json.
 - **JSON To YAML Data Conversion:** Convert json data to yaml.
 - **YAML To XML Data Conversion:** Convert yaml data to xml.
