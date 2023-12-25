@@ -52,7 +52,7 @@ FormatFusion is your one-stop solution for seamless conversion between YAML, JSO
 Here is the example of using FormatFusion to convert yaml data to json.
 
 ```javascript
-const ff = import formatfusionjs
+const ff = import "formatfusionjs";
 
 
 yaml_data = `
