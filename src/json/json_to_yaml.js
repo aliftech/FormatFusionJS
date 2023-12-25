@@ -1,10 +1,10 @@
 yaml = require("yamljs");
 
 
-function json_to_yaml(jsonString) {
+function json_to_yaml(jsonString, indent) {
     try {
         const lines = JSON.parse(jsonString);
-        return yaml.stringify(lines, 4);
+        return yaml.stringify(lines, indent);
     } catch (error) {
         throw error;
     }
