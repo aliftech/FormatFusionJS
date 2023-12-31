@@ -1,19 +1,35 @@
 {
   "name": "formatfusionjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Effortlessly Convert Between Data Formats with FormatFusion. FormatFusion is your one-stop solution for seamless conversion between YAML, JSON, and XML formats.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "babel src -d dist"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aliftech/FormatFusionJS.git"
+  },
+  "keywords": [
+    "data-conversion",
+    "json",
+    "yaml",
+    "xml"
+  ],
   "author": "Wahyu Krisna Aji",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aliftech/FormatFusionJS/issues"
+  },
+  "homepage": "https://github.com/aliftech/FormatFusionJS#readme",
   "devDependencies": {
     "@babel/cli": "^7.23.4",
     "@babel/core": "^7.23.6",
     "@babel/preset-env": "^7.23.6"
   },
   "dependencies": {
+    "formatfusionjs": "^1.0.0",
     "xml-js": "^1.6.11",
     "yamljs": "^0.3.0"
   }
