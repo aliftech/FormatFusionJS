@@ -1,11 +1,31 @@
 {
   "name": "formatfusionjs",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Effortlessly Convert Between Data Formats with FormatFusion. FormatFusion is your one-stop solution for seamless conversion between YAML, JSON, and XML formats.",
-  "main": "index.js",
+  "main": "./dist/cjs/index.ts",
+  "types": "./dist/cjs/types/index.d.ts",
   "scripts": {
-    "build": "babel src -d dist"
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv ./dist/esm/index.js ./dist/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/types/index.d.ts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/types/index.d.ts",
+        "default": "./dist/cjs/index.ts"
+      }
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aliftech/FormatFusionJS.git"
@@ -25,9 +45,11 @@
   "devDependencies": {
     "@babel/cli": "^7.23.4",
     "@babel/core": "^7.23.6",
-    "@babel/preset-env": "^7.23.6"
+    "@babel/preset-env": "^7.23.6",
+    "@types/yamljs": "^0.2.34"
   },
   "dependencies": {
+    "typescript": "^5.3.3",
     "xml-js": "^1.6.11",
     "yamljs": "^0.3.0"
   }
