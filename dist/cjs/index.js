@@ -48,7 +48,7 @@ function jsonToYaml(jsonString, indent = 2) {
 exports.jsonToYaml = jsonToYaml;
 function xmlToJson(xmlData) {
     try {
-        const lines = xmljs.xml2json(xmlData);
+        const lines = parseXmlToJson(xmlData);
         return lines;
     }
     catch (error) {
@@ -58,9 +58,8 @@ function xmlToJson(xmlData) {
 exports.xmlToJson = xmlToJson;
 function xmlToYaml(xmlData, indent = 2) {
     try {
-        const lines = xmljs.xml2json(xmlData);
-        const parsed = JSON.parse(lines);
-        return yaml.stringify(parsed, indent);
+        const lines = parseXmlToJson(xmlData);
+        return yaml.stringify(lines, indent);
     }
     catch (error) {
         throw error;
@@ -88,3 +87,26 @@ function yamlToXml(yamlData) {
     }
 }
 exports.yamlToXml = yamlToXml;
+function parseXmlToJson(xml) {
+    const json = {};
+    const elements = xml.split(/(<\/?(\w*)(?:\s[^>]*)*>)/gm);
+    // Handle potential null elements and ensure key extraction
+    const parsedElements = elements.map((element, index) => {
+        var _a, _b;
+        if (index % 2 === 0 && elements[index - 1]) {
+            const key = (_b = (_a = elements[index - 1]) === null || _a === void 0 ? void 0 : _a.match(/<(\w*)/)) === null || _b === void 0 ? void 0 : _b[1]; // Use optional chaining
+            const value = element.trim();
+            return { key, value };
+        }
+        else {
+            return null;
+        }
+    }).filter(Boolean);
+    // Address type mismatches and handle nullish values
+    parsedElements.forEach((element) => {
+        const { key, value } = element !== null && element !== void 0 ? element : {};
+        const parsedValue = (value === null || value === void 0 ? void 0 : value.trim()) ? parseXmlToJson(value) : value;
+        json[key !== null && key !== void 0 ? key : ''] = parsedValue || null;
+    });
+    return json;
+}

@@ -48,7 +48,7 @@ function jsonToYaml(jsonString, indent = 2) {
 exports.jsonToYaml = jsonToYaml;
 function xmlToJson(xmlData) {
     try {
-        const lines = xmljs.xml2json(xmlData);
+        const lines = parseXmlToJson(xmlData);
         return lines;
     }
     catch (error) {
@@ -58,9 +58,8 @@ function xmlToJson(xmlData) {
 exports.xmlToJson = xmlToJson;
 function xmlToYaml(xmlData, indent = 2) {
     try {
-        const lines = xmljs.xml2json(xmlData);
-        const parsed = JSON.parse(lines);
-        return yaml.stringify(parsed, indent);
+        const lines = parseXmlToJson(xmlData);
+        return yaml.stringify(lines, indent);
     }
     catch (error) {
         throw error;
@@ -88,3 +87,25 @@ function yamlToXml(yamlData) {
     }
 }
 exports.yamlToXml = yamlToXml;
+function parseXmlToJson(xml) {
+    const json = {};
+    const elements = xml.split(/(<\/?(\w*)(?:\s[^>]*)*>)/gm);
+    // Handle potential null elements and ensure key extraction
+    const parsedElements = elements.map((element, index) => {
+        if (index % 2 === 0 && elements[index - 1]) {
+            const key = elements[index - 1]?.match(/<(\w*)/)?.[1]; // Use optional chaining
+            const value = element.trim();
+            return { key, value };
+        }
+        else {
+            return null;
+        }
+    }).filter(Boolean);
+    // Address type mismatches and handle nullish values
+    parsedElements.forEach((element) => {
+        const { key, value } = element ?? {};
+        const parsedValue = value?.trim() ? parseXmlToJson(value) : value;
+        json[key ?? ''] = parsedValue || null;
+    });
+    return json;
+}
