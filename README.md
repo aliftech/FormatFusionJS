@@ -49,17 +49,33 @@ FormatFusion is your one-stop solution for seamless conversion between YAML, JSO
 Here is the example of using FormatFusion to convert yaml data to json.
 
 ```javascript
-const ff = import "formatfusionjs";
+const ff = require("formatfusionjs");
 
-
-yaml_data = `
-   name: John Doe
-   age: 30
-   city: New York
+yaml_data = `name: John Doe
+age: 30
+address:
+  street: Jalan Merdeka
+  city: Jakarta
+  province: DKI Jakarta
 `;
 
-json_data = ff.yaml_to_json(yaml_data);
-console.log(json_data);
+data = ff.yamlToJson(yaml_data);
+
+console.log(data);
+```
+
+the code above will return
+
+```json
+{
+  "name": "John Doe",
+  "age": 30,
+  "address": {
+    "street": "Jalan Merdeka",
+    "city": "Jakarta",
+    "province": "DKI Jakarta"
+  }
+}
 ```
 
 For more examples, you can visit our <a href="https://github.com/aliftech/FormatFusionJS/blob/master/DOCUMENTATION.md">documentation</a>.
