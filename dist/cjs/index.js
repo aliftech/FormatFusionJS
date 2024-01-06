@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.yamlToXml = exports.yamlToJson = exports.xmlToYaml = exports.xmlToJson = exports.jsonToYaml = exports.jsonToXml = void 0;
 const xmljs = __importStar(require("xml-js"));
 const yaml = __importStar(require("yamljs"));
+const xml2js = __importStar(require("xml2js"));
 function jsonToXml(jsonData) {
     try {
         const lines = xmljs.json2xml(jsonData);
@@ -47,18 +48,42 @@ function jsonToYaml(jsonString, indent = 2) {
 }
 exports.jsonToYaml = jsonToYaml;
 function xmlToJson(xmlData) {
-    try {
-        const lines = parseXmlToJson(xmlData);
-        return lines;
-    }
-    catch (error) {
-        throw error;
-    }
+    return new Promise((resolve, reject) => {
+        try {
+            const parser = new xml2js.Parser();
+            parser.parseString(xmlData, (err, jsonData) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    // Convert the JSON data to the desired structure
+                    const convertedData = {};
+                    for (const key in jsonData) {
+                        if (jsonData.hasOwnProperty(key)) {
+                            const value = jsonData[key];
+                            // If the value is an object, recursively convert it
+                            if (typeof value === 'object') {
+                                convertedData[key] = xmlToJson(JSON.stringify(value)); // Recursively convert nested objects
+                            }
+                            else {
+                                // Otherwise, just add the value to the result
+                                convertedData[key] = value;
+                            }
+                        }
+                    }
+                    resolve(convertedData);
+                }
+            });
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
 }
 exports.xmlToJson = xmlToJson;
 function xmlToYaml(xmlData, indent = 2) {
     try {
-        const lines = parseXmlToJson(xmlData);
+        const lines = xmlToJson(xmlData);
         return yaml.stringify(lines, indent);
     }
     catch (error) {
@@ -87,26 +112,3 @@ function yamlToXml(yamlData) {
     }
 }
 exports.yamlToXml = yamlToXml;
-function parseXmlToJson(xml) {
-    const json = {};
-    const elements = xml.split(/(<\/?(\w*)(?:\s[^>]*)*>)/gm);
-    // Handle potential null elements and ensure key extraction
-    const parsedElements = elements.map((element, index) => {
-        var _a, _b;
-        if (index % 2 === 0 && elements[index - 1]) {
-            const key = (_b = (_a = elements[index - 1]) === null || _a === void 0 ? void 0 : _a.match(/<(\w*)/)) === null || _b === void 0 ? void 0 : _b[1]; // Use optional chaining
-            const value = element.trim();
-            return { key, value };
-        }
-        else {
-            return null;
-        }
-    }).filter(Boolean);
-    // Address type mismatches and handle nullish values
-    parsedElements.forEach((element) => {
-        const { key, value } = element !== null && element !== void 0 ? element : {};
-        const parsedValue = (value === null || value === void 0 ? void 0 : value.trim()) ? parseXmlToJson(value) : value;
-        json[key !== null && key !== void 0 ? key : ''] = parsedValue || null;
-    });
-    return json;
-}

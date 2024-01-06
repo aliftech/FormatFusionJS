@@ -1,5 +1,6 @@
 import * as xmljs from 'xml-js';
 import * as yaml from 'yamljs';
+import * as xml2js from 'xml2js';
 
 // Define type aliases for clarity
 type JSONData = {}; // Adjust based on your specific JSON structure
@@ -24,18 +25,41 @@ function jsonToYaml(jsonString: string, indent: number = 2): YAMLData {
   }
 }
 
-function xmlToJson(xmlData: XMLData): JSONData {
-  try {
-    const lines = parseXmlToJson(xmlData);
-    return lines;
-  } catch (error) {
-    throw error;
-  }
+function xmlToJson(xmlData: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    try {
+      const parser = new xml2js.Parser();
+      parser.parseString(xmlData, (err, jsonData: { [key: string]: any }) => {
+        if (err) {
+          reject(err);
+        } else {
+          // Convert the JSON data to the desired structure
+          const convertedData: { [key: string]: any } = {};
+          for (const key in jsonData) {
+            if (jsonData.hasOwnProperty(key)) {
+              const value = jsonData[key];
+
+              // If the value is an object, recursively convert it
+              if (typeof value === 'object') {
+                convertedData[key] = xmlToJson(JSON.stringify(value)); // Recursively convert nested objects
+              } else {
+                // Otherwise, just add the value to the result
+                convertedData[key] = value;
+              }
+            }
+          }
+          resolve(convertedData);
+        }
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
-function xmlToYaml(xmlData: XMLData, indent: number = 2): YAMLData {
+function xmlToYaml(xmlData: string, indent: number = 2): YAMLData {
   try {
-    const lines = parseXmlToJson(xmlData);
+    const lines = xmlToJson(xmlData);
     return yaml.stringify(lines, indent);
   } catch (error) {
     throw error;
@@ -60,33 +84,6 @@ function yamlToXml(yamlData: YAMLData): XMLData {
     throw error;
   }
 }
-
-function parseXmlToJson(xml: string): object {
-  const json: { [key: string]: any } = {};
-
-  const elements = xml.split(/(<\/?(\w*)(?:\s[^>]*)*>)/gm);
-
-  // Handle potential null elements and ensure key extraction
-  const parsedElements = elements.map((element, index) => {
-      if (index % 2 === 0 && elements[index - 1]) {
-          const key = elements[index - 1]?.match(/<(\w*)/)?.[1]; // Use optional chaining
-          const value = element.trim();
-          return { key, value };
-      } else {
-          return null;
-      }
-  }).filter(Boolean);
-
-  // Address type mismatches and handle nullish values
-  parsedElements.forEach((element: { key: string | undefined; value: string } | null) => { // Adjusted type annotation
-      const { key, value } = element ?? {};
-      const parsedValue = value?.trim() ? parseXmlToJson(value) : value;
-      json[key ?? ''] = parsedValue || null;
-  });
-
-  return json;
-}
-
 
 // Export the functions for use in other modules
 export {
