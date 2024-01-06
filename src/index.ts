@@ -26,7 +26,7 @@ function jsonToYaml(jsonString: string, indent: number = 2): YAMLData {
   }
 }
 
-function xmlToJson(xmlData: string) {
+function xmlToJson(xmlData: any) {
   try {
     parseString(xmlData, { explicitArray: false }, function(error, result) {
         return result;
