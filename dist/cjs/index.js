@@ -24,12 +24,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.yamlToXml = exports.yamlToJson = exports.xmlToYaml = exports.xmlToJson = exports.jsonToYaml = exports.jsonToXml = void 0;
-const xmljs = __importStar(require("xml-js"));
+const xml2js_1 = require("xml2js");
 const yaml = __importStar(require("yamljs"));
-const xml2js = __importStar(require("xml2js"));
 function jsonToXml(jsonData) {
     try {
-        const lines = xmljs.json2xml(jsonData);
+        const builder = new xml2js_1.Builder();
+        const lines = builder.buildObject(jsonData);
         return lines;
     }
     catch (error) {
@@ -48,37 +48,14 @@ function jsonToYaml(jsonString, indent = 2) {
 }
 exports.jsonToYaml = jsonToYaml;
 function xmlToJson(xmlData) {
-    return new Promise((resolve, reject) => {
-        try {
-            const parser = new xml2js.Parser();
-            parser.parseString(xmlData, (err, jsonData) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    // Convert the JSON data to the desired structure
-                    const convertedData = {};
-                    for (const key in jsonData) {
-                        if (jsonData.hasOwnProperty(key)) {
-                            const value = jsonData[key];
-                            // If the value is an object, recursively convert it
-                            if (typeof value === 'object') {
-                                convertedData[key] = xmlToJson(JSON.stringify(value)); // Recursively convert nested objects
-                            }
-                            else {
-                                // Otherwise, just add the value to the result
-                                convertedData[key] = value;
-                            }
-                        }
-                    }
-                    resolve(convertedData);
-                }
-            });
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
+    try {
+        (0, xml2js_1.parseString)(xmlData, { explicitArray: false }, function (error, result) {
+            return result;
+        });
+    }
+    catch (error) {
+        throw error;
+    }
 }
 exports.xmlToJson = xmlToJson;
 function xmlToYaml(xmlData, indent = 2) {
@@ -105,7 +82,7 @@ function yamlToXml(yamlData) {
     try {
         const lines = yaml.parse(yamlData);
         const jsonData = JSON.stringify(lines);
-        return xmljs.json2xml(jsonData);
+        return jsonToXml(jsonData);
     }
     catch (error) {
         throw error;
