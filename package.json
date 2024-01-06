@@ -1,6 +1,6 @@
 {
   "name": "formatfusionjs",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Effortlessly Convert Between Data Formats with FormatFusion. FormatFusion is your one-stop solution for seamless conversion between YAML, JSON, and XML formats.",
   "main": "./dist/cjs/index.js",
   "types": "./dist/cjs/types/index.d.ts",
@@ -52,6 +52,7 @@
   "dependencies": {
     "typescript": "^5.3.3",
     "xml-js": "^1.6.11",
+    "xml2js": "^0.6.2",
     "yamljs": "^0.3.0"
   }
 }
