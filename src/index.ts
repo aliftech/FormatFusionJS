@@ -26,7 +26,7 @@ function jsonToYaml(jsonString: string, indent: number = 2): YAMLData {
   }
 }
 
-function xmlToJson(xmlData: XMLData) {
+function xmlToJson(xmlData: string) {
   try {
     parseString(xmlData, { explicitArray: false }, function(error, result) {
         return result;
@@ -57,8 +57,7 @@ function yamlToJson(yamlString: YAMLData): string {
 function yamlToXml(yamlData: YAMLData): XMLData {
   try {
     const lines = yaml.parse(yamlData);
-    const jsonData = JSON.stringify(lines);
-    return jsonToXml(jsonData);
+    return jsonToXml(lines);
   } catch (error) {
     throw error;
   }

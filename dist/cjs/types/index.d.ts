@@ -2,7 +2,7 @@ type XMLData = string;
 type YAMLData = string;
 declare function jsonToXml(jsonData: string): string;
 declare function jsonToYaml(jsonString: string, indent?: number): YAMLData;
-declare function xmlToJson(xmlData: XMLData): void;
+declare function xmlToJson(xmlData: string): void;
 declare function xmlToYaml(xmlData: XMLData, indent?: number): YAMLData;
 declare function yamlToJson(yamlString: YAMLData): string;
 declare function yamlToXml(yamlData: YAMLData): XMLData;

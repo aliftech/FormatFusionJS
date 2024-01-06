@@ -81,8 +81,7 @@ exports.yamlToJson = yamlToJson;
 function yamlToXml(yamlData) {
     try {
         const lines = yaml.parse(yamlData);
-        const jsonData = JSON.stringify(lines);
-        return jsonToXml(jsonData);
+        return jsonToXml(lines);
     }
     catch (error) {
         throw error;
